@@ -15,6 +15,10 @@ local common = import "common.jsonnet";
         {
           "name": "core",
           "containerPort": 61616
+        },
+        {
+          "name": "jolokia",
+          "containerPort": 8161
         }
       ],
       "env": [ addressEnv ],
