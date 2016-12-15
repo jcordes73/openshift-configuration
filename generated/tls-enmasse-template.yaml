@@ -18,34 +18,34 @@ objects:
     kind: DeploymentConfig
     metadata:
       labels:
-        address: "${ADDRESS}"
+        address: ${ADDRESS}
         app: enmasse
         multicast: 'false'
         store_and_forward: 'true'
         type: address-config
-      name: "${NAME}"
+      name: ${NAME}
     spec:
       replicas: 1
       selector:
-        address: "${ADDRESS}"
+        address: ${ADDRESS}
         role: broker
       template:
         metadata:
           labels:
-            address: "${ADDRESS}"
+            address: ${ADDRESS}
             app: enmasse
             role: broker
         spec:
           containers:
           - env:
             - name: QUEUE_NAME
-              value: "${ADDRESS}"
+              value: ${ADDRESS}
             image: artemis
             lifecycle:
               preStop:
                 exec:
                   command:
-                  - "/opt/artemis-shutdown-hook/bin/artemis-shutdown-hook"
+                  - /opt/artemis-shutdown-hook/bin/artemis-shutdown-hook
             livenessProbe:
               tcpSocket:
                 port: amqp
@@ -55,8 +55,10 @@ objects:
               name: amqp
             - containerPort: 61616
               name: core
+            - containerPort: 8161
+              name: jolokia
             volumeMounts:
-            - mountPath: "/var/run/artemis"
+            - mountPath: /var/run/artemis
               name: vol-${NAME}
           volumes:
           - emptyDir: {}
@@ -106,39 +108,39 @@ objects:
       - ReadWriteMany
       resources:
         requests:
-          storage: "${STORAGE_CAPACITY}"
+          storage: ${STORAGE_CAPACITY}
   - apiVersion: v1
     kind: DeploymentConfig
     metadata:
       labels:
-        address: "${ADDRESS}"
+        address: ${ADDRESS}
         app: enmasse
         multicast: 'false'
         store_and_forward: 'true'
         type: address-config
-      name: "${NAME}"
+      name: ${NAME}
     spec:
       replicas: 1
       selector:
-        address: "${ADDRESS}"
+        address: ${ADDRESS}
         role: broker
       template:
         metadata:
           labels:
-            address: "${ADDRESS}"
+            address: ${ADDRESS}
             app: enmasse
             role: broker
         spec:
           containers:
           - env:
             - name: QUEUE_NAME
-              value: "${ADDRESS}"
+              value: ${ADDRESS}
             image: artemis
             lifecycle:
               preStop:
                 exec:
                   command:
-                  - "/opt/artemis-shutdown-hook/bin/artemis-shutdown-hook"
+                  - /opt/artemis-shutdown-hook/bin/artemis-shutdown-hook
             livenessProbe:
               tcpSocket:
                 port: amqp
@@ -148,8 +150,10 @@ objects:
               name: amqp
             - containerPort: 61616
               name: core
+            - containerPort: 8161
+              name: jolokia
             volumeMounts:
-            - mountPath: "/var/run/artemis"
+            - mountPath: /var/run/artemis
               name: vol-${NAME}
           volumes:
           - name: vol-${NAME}
@@ -193,34 +197,34 @@ objects:
     kind: DeploymentConfig
     metadata:
       labels:
-        address: "${ADDRESS}"
+        address: ${ADDRESS}
         app: enmasse
         multicast: 'true'
         store_and_forward: 'true'
         type: address-config
-      name: "${NAME}"
+      name: ${NAME}
     spec:
       replicas: 1
       selector:
-        address: "${ADDRESS}"
+        address: ${ADDRESS}
         role: broker
       template:
         metadata:
           labels:
-            address: "${ADDRESS}"
+            address: ${ADDRESS}
             app: enmasse
             role: broker
         spec:
           containers:
           - env:
             - name: TOPIC_NAME
-              value: "${ADDRESS}"
+              value: ${ADDRESS}
             image: artemis
             lifecycle:
               preStop:
                 exec:
                   command:
-                  - "/opt/artemis-shutdown-hook/bin/artemis-shutdown-hook"
+                  - /opt/artemis-shutdown-hook/bin/artemis-shutdown-hook
             livenessProbe:
               tcpSocket:
                 port: amqp
@@ -230,14 +234,16 @@ objects:
               name: amqp
             - containerPort: 61616
               name: core
+            - containerPort: 8161
+              name: jolokia
             volumeMounts:
-            - mountPath: "/var/run/artemis"
+            - mountPath: /var/run/artemis
               name: vol-${NAME}
           - env:
             - name: LINK_CAPACITY
-              value: "${ROUTER_LINK_CAPACITY}"
+              value: ${ROUTER_LINK_CAPACITY}
             - name: TOPIC_NAME
-              value: "${ADDRESS}"
+              value: ${ADDRESS}
             image: router
             livenessProbe:
               tcpSocket:
@@ -254,16 +260,16 @@ objects:
               name: amqps
               protocol: TCP
             volumeMounts:
-            - mountPath: "/etc/qpid-dispatch/ssl"
+            - mountPath: /etc/qpid-dispatch/ssl
               name: ssl-certs
               readOnly: true
           - env:
             - name: TOPIC_NAME
-              value: "${ADDRESS}"
+              value: ${ADDRESS}
             image: topic-forwarder
             livenessProbe:
               httpGet:
-                path: "/health"
+                path: /health
                 port: health
             name: forwarder
             ports:
@@ -333,39 +339,39 @@ objects:
       - ReadWriteMany
       resources:
         requests:
-          storage: "${STORAGE_CAPACITY}"
+          storage: ${STORAGE_CAPACITY}
   - apiVersion: v1
     kind: DeploymentConfig
     metadata:
       labels:
-        address: "${ADDRESS}"
+        address: ${ADDRESS}
         app: enmasse
         multicast: 'true'
         store_and_forward: 'true'
         type: address-config
-      name: "${NAME}"
+      name: ${NAME}
     spec:
       replicas: 1
       selector:
-        address: "${ADDRESS}"
+        address: ${ADDRESS}
         role: broker
       template:
         metadata:
           labels:
-            address: "${ADDRESS}"
+            address: ${ADDRESS}
             app: enmasse
             role: broker
         spec:
           containers:
           - env:
             - name: TOPIC_NAME
-              value: "${ADDRESS}"
+              value: ${ADDRESS}
             image: artemis
             lifecycle:
               preStop:
                 exec:
                   command:
-                  - "/opt/artemis-shutdown-hook/bin/artemis-shutdown-hook"
+                  - /opt/artemis-shutdown-hook/bin/artemis-shutdown-hook
             livenessProbe:
               tcpSocket:
                 port: amqp
@@ -375,14 +381,16 @@ objects:
               name: amqp
             - containerPort: 61616
               name: core
+            - containerPort: 8161
+              name: jolokia
             volumeMounts:
-            - mountPath: "/var/run/artemis"
+            - mountPath: /var/run/artemis
               name: vol-${NAME}
           - env:
             - name: LINK_CAPACITY
-              value: "${ROUTER_LINK_CAPACITY}"
+              value: ${ROUTER_LINK_CAPACITY}
             - name: TOPIC_NAME
-              value: "${ADDRESS}"
+              value: ${ADDRESS}
             image: router
             livenessProbe:
               tcpSocket:
@@ -399,16 +407,16 @@ objects:
               name: amqps
               protocol: TCP
             volumeMounts:
-            - mountPath: "/etc/qpid-dispatch/ssl"
+            - mountPath: /etc/qpid-dispatch/ssl
               name: ssl-certs
               readOnly: true
           - env:
             - name: TOPIC_NAME
-              value: "${ADDRESS}"
+              value: ${ADDRESS}
             image: topic-forwarder
             livenessProbe:
               httpGet:
-                path: "/health"
+                path: /health
                 port: health
             name: forwarder
             ports:
@@ -471,12 +479,12 @@ objects:
     kind: ConfigMap
     metadata:
       labels:
-        address: "${ADDRESS}"
+        address: ${ADDRESS}
         app: enmasse
-        multicast: "${MULTICAST}"
+        multicast: ${MULTICAST}
         store_and_forward: 'false'
         type: address-config
-      name: "${NAME}"
+      name: ${NAME}
   parameters:
   - description: A valid name for the instance
     name: NAME
@@ -494,7 +502,7 @@ objects:
       app: enmasse
     name: restapi
   spec:
-    host: "${RESTAPI_HOSTNAME}"
+    host: ${RESTAPI_HOSTNAME}
     port:
       targetPort: http
     to:
@@ -507,13 +515,13 @@ objects:
       app: enmasse
     name: router
   spec:
-    dockerImageRepository: "${ROUTER_REPO}"
+    dockerImageRepository: ${ROUTER_REPO}
     importPolicy:
       scheduled: true
     tags:
     - from:
         kind: DockerImage
-        name: "${ROUTER_REPO}:latest"
+        name: ${ROUTER_REPO}:latest
       name: latest
 - apiVersion: v1
   kind: DeploymentConfig
@@ -536,7 +544,7 @@ objects:
         containers:
         - env:
           - name: LINK_CAPACITY
-            value: "${ROUTER_LINK_CAPACITY}"
+            value: ${ROUTER_LINK_CAPACITY}
           image: router
           livenessProbe:
             tcpSocket:
@@ -553,7 +561,7 @@ objects:
             name: amqps
             protocol: TCP
           volumeMounts:
-          - mountPath: "/etc/qpid-dispatch/ssl"
+          - mountPath: /etc/qpid-dispatch/ssl
             name: ssl-certs
             readOnly: true
         volumes:
@@ -577,13 +585,13 @@ objects:
       app: enmasse
     name: artemis
   spec:
-    dockerImageRepository: "${BROKER_REPO}"
+    dockerImageRepository: ${BROKER_REPO}
     importPolicy:
       scheduled: true
     tags:
     - from:
         kind: DockerImage
-        name: "${BROKER_REPO}:latest"
+        name: ${BROKER_REPO}:latest
       name: latest
 - apiVersion: v1
   kind: ImageStream
@@ -592,13 +600,13 @@ objects:
       app: enmasse
     name: topic-forwarder
   spec:
-    dockerImageRepository: "${TOPIC_FORWARDER_REPO}"
+    dockerImageRepository: ${TOPIC_FORWARDER_REPO}
     importPolicy:
       scheduled: true
     tags:
     - from:
         kind: DockerImage
-        name: "${TOPIC_FORWARDER_REPO}:latest"
+        name: ${TOPIC_FORWARDER_REPO}:latest
       name: latest
 - apiVersion: v1
   kind: Service
@@ -632,13 +640,13 @@ objects:
       app: enmasse
     name: configserv
   spec:
-    dockerImageRepository: "${CONFIGSERV_REPO}"
+    dockerImageRepository: ${CONFIGSERV_REPO}
     importPolicy:
       scheduled: true
     tags:
     - from:
         kind: DockerImage
-        name: "${CONFIGSERV_REPO}:latest"
+        name: ${CONFIGSERV_REPO}:latest
       name: latest
 - apiVersion: v1
   kind: ImageStream
@@ -647,13 +655,13 @@ objects:
       app: enmasse
     name: ragent
   spec:
-    dockerImageRepository: "${RAGENT_REPO}"
+    dockerImageRepository: ${RAGENT_REPO}
     importPolicy:
       scheduled: true
     tags:
     - from:
         kind: DockerImage
-        name: "${RAGENT_REPO}:latest"
+        name: ${RAGENT_REPO}:latest
       name: latest
 - apiVersion: v1
   kind: ImageStream
@@ -662,13 +670,13 @@ objects:
       app: enmasse
     name: subserv
   spec:
-    dockerImageRepository: "${SUBSERV_REPO}"
+    dockerImageRepository: ${SUBSERV_REPO}
     importPolicy:
       scheduled: true
     tags:
     - from:
         kind: DockerImage
-        name: "${SUBSERV_REPO}:latest"
+        name: ${SUBSERV_REPO}:latest
       name: latest
 - apiVersion: v1
   kind: DeploymentConfig
@@ -794,13 +802,13 @@ objects:
       app: enmasse
     name: enmasse-rest
   spec:
-    dockerImageRepository: "${RESTAPI_REPO}"
+    dockerImageRepository: ${RESTAPI_REPO}
     importPolicy:
       scheduled: true
     tags:
     - from:
         kind: DockerImage
-        name: "${RESTAPI_REPO}:latest"
+        name: ${RESTAPI_REPO}:latest
       name: latest
 - apiVersion: v1
   kind: ImageStream
@@ -809,13 +817,13 @@ objects:
       app: enmasse
     name: storage-controller
   spec:
-    dockerImageRepository: "${STORAGE_CONTROLLER_REPO}"
+    dockerImageRepository: ${STORAGE_CONTROLLER_REPO}
     importPolicy:
       scheduled: true
     tags:
     - from:
         kind: DockerImage
-        name: "${STORAGE_CONTROLLER_REPO}:latest"
+        name: ${STORAGE_CONTROLLER_REPO}:latest
       name: latest
 - apiVersion: v1
   data:
@@ -947,7 +955,7 @@ objects:
       app: enmasse
     name: messaging
   spec:
-    host: "${MESSAGING_HOSTNAME}"
+    host: ${MESSAGING_HOSTNAME}
     port:
       targetPort: amqps
     tls:

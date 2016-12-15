@@ -11,34 +11,34 @@ objects:
   kind: DeploymentConfig
   metadata:
     labels:
-      address: "${ADDRESS}"
+      address: ${ADDRESS}
       app: enmasse
       multicast: 'true'
       store_and_forward: 'true'
       type: address-config
-    name: "${NAME}"
+    name: ${NAME}
   spec:
     replicas: 1
     selector:
-      address: "${ADDRESS}"
+      address: ${ADDRESS}
       role: broker
     template:
       metadata:
         labels:
-          address: "${ADDRESS}"
+          address: ${ADDRESS}
           app: enmasse
           role: broker
       spec:
         containers:
         - env:
           - name: TOPIC_NAME
-            value: "${ADDRESS}"
+            value: ${ADDRESS}
           image: artemis
           lifecycle:
             preStop:
               exec:
                 command:
-                - "/opt/artemis-shutdown-hook/bin/artemis-shutdown-hook"
+                - /opt/artemis-shutdown-hook/bin/artemis-shutdown-hook
           livenessProbe:
             tcpSocket:
               port: amqp
@@ -48,14 +48,16 @@ objects:
             name: amqp
           - containerPort: 61616
             name: core
+          - containerPort: 8161
+            name: jolokia
           volumeMounts:
-          - mountPath: "/var/run/artemis"
+          - mountPath: /var/run/artemis
             name: vol-${NAME}
         - env:
           - name: LINK_CAPACITY
-            value: "${ROUTER_LINK_CAPACITY}"
+            value: ${ROUTER_LINK_CAPACITY}
           - name: TOPIC_NAME
-            value: "${ADDRESS}"
+            value: ${ADDRESS}
           image: router
           livenessProbe:
             tcpSocket:
@@ -70,11 +72,11 @@ objects:
             protocol: TCP
         - env:
           - name: TOPIC_NAME
-            value: "${ADDRESS}"
+            value: ${ADDRESS}
           image: topic-forwarder
           livenessProbe:
             httpGet:
-              path: "/health"
+              path: /health
               port: health
           name: forwarder
           ports:
